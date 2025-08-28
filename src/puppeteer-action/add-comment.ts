@@ -1,5 +1,5 @@
 export const addComment = async (page, comment) => {
-  const inputPlaceholderSelector = ".empty__placeholder";
+  const inputPlaceholderSelector = ".preview__empty";
   const inputFieldSelector = ".input [contenteditable=true] p";
   const sendButtonSelector = "button.data__button-send";
 

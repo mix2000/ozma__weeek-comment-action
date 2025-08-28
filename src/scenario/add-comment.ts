@@ -1,6 +1,6 @@
 import { getActionInput } from "../utils";
 import { ActionInputs } from "../consts";
-import puppeteer from "puppeteer";
+import puppeteer, {executablePath} from "puppeteer";
 import { addComment, authorize, goToTask } from "../puppeteer-action";
 import * as core from "@actions/core";
 
@@ -12,9 +12,14 @@ export const scenarioAddComment = async (comment, weeekTaskId) => {
   const weeekPassword = getActionInput(ActionInputs.weeekPassword);
 
   const browser = await puppeteer.launch({
+    args: ['--no-sandbox', '--lang=ru-RU', '--disable-web-security', '--font-render-hinting=none'],
+    headless: false,
+    executablePath: executablePath(),
+  });
+  /*const browser = await puppeteer.launch({
     headless: true,
     executablePath: process.env.PUPPETEER_EXEC_PATH,
-  });
+  });*/
   const page = await browser.newPage();
   page.setDefaultTimeout(10000);
 
@@ -36,6 +41,6 @@ export const scenarioAddComment = async (comment, weeekTaskId) => {
   } catch (error) {
     core.error(`Ошибка: ${error.message}`);
   } finally {
-    await browser.close();
+    // await browser.close();
   }
 };
