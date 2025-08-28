@@ -10,15 +10,22 @@ import { scenarioAddComment } from "./scenario/add-comment";
 
 const run = async () => {
   try {
-    const branchName = getActionInput(ActionInputs.branchName);
     const comment = getActionInput(ActionInputs.comment);
+
+    if (!comment) {
+        core.info(`Комментарий не задан.`);
+
+        return;
+    }
+
+    const branchName = getActionInput(ActionInputs.branchName);
     const userMappingJson = getActionInput(ActionInputs.userMapping);
 
     const userMapping: Record<string, string> = userMappingJson
       ? JSON.parse(userMappingJson)
       : {};
 
-    const taskId = getTaskIdFromBranchName(branchName);
+    const taskId = branchName && getTaskIdFromBranchName(branchName);
 
     if (!taskId) {
       throw new Error(
@@ -34,8 +41,6 @@ const run = async () => {
     const finalComment = weeekUserId ? `${weeekUserId}: ${comment}` : comment;
 
     await scenarioAddComment(finalComment, taskId);
-
-    core.info("Комментарий успешно добавлен к задаче");
   } catch (error) {
     const errorString = `Ошибка: ${getErrorMessage(error)}`;
 
